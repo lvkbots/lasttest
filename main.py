@@ -10,7 +10,8 @@ app = Flask(__name__)
 TELEGRAM_TOKEN = '7184666905:AAFd2arfmIFZ86cp9NNVp57dKkH6hAVi4iM'
 bot = Bot(token=TELEGRAM_TOKEN)
 
-dispatcher = Dispatcher(bot, None, workers=0)
+# Correction de l'avertissement en ajoutant un worker
+dispatcher = Dispatcher(bot, None, workers=1)
 
 # Commande /start
 def start(update, context):
@@ -31,6 +32,11 @@ def echo(update, context):
 # Ajout des handlers
 dispatcher.add_handler(CommandHandler("start", start))
 dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
+
+# Route pour la racine afin d'éviter les erreurs 404
+@app.route('/', methods=['GET'])
+def home():
+    return 'Bot Telegram est en ligne !'
 
 # Route pour recevoir les mises à jour Telegram
 @app.route(f'/{TELEGRAM_TOKEN}', methods=['POST'])
