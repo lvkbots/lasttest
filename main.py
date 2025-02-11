@@ -26,7 +26,7 @@ def home():
     return f"Bot actif et opérationnel depuis {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
 
 # Token du bot (sécurisé via les variables d'environnement)
-TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
+TOKEN = os.getenv('7184666905:AAFd2arfmIFZ86cp9NNVp57dKkH6hAVi4iM')
 
 # Médias
 INTRO_VIDEO = "https://drive.google.com/uc?export=download&id=1NREjyyYDfdgGtx4r-Lna-sKgpCHIC1ia"
