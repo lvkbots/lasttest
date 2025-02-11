@@ -33,13 +33,23 @@ INTRO_VIDEO = "https://drive.google.com/uc?export=download&id=1NREjyyYDfdgGtx4r-
 MAIN_IMAGE = "https://i.ytimg.com/vi/KolFup7TxOM/hq720.jpg"
 BOTTOM_IMAGE = "https://aviator.com.in/wp-content/uploads/2024/04/Aviator-Predictor-in-India.png"
 
+# Images pour les preuves de paiement
 PAYMENT_PROOF_IMAGES = [
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Circle_sign_2.svg/1024px-Circle_sign_2.svg.png",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Circle_sign_2.svg/1024px-Circle_sign_2.svg.png",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Circle_sign_2.svg/1024px-Circle_sign_2.svg.png",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Circle_sign_2.svg/1024px-Circle_sign_2.svg.png",
     "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Circle_sign_2.svg/1024px-Circle_sign_2.svg.png"
-] * 5
+]
 
+# Images pour les informations
 INFO_IMAGES = [
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Circle_sign_2.svg/1024px-Circle_sign_2.svg.png",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Circle_sign_2.svg/1024px-Circle_sign_2.svg.png",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Circle_sign_2.svg/1024px-Circle_sign_2.svg.png",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Circle_sign_2.svg/1024px-Circle_sign_2.svg.png",
     "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Circle_sign_2.svg/1024px-Circle_sign_2.svg.png"
-] * 5
+]
 
 def create_keyboard():
     keyboard = [
@@ -61,7 +71,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption="🎮 Découvrez notre méthode révolutionnaire ! 🎰"
         )
 
-        message = f"""🎯 BILL GATES, BONJOUR ❗️
+        message = f"""\
+🎯 BILL GATES, BONJOUR ❗️
 
 Je suis un programmeur vénézuélien et je connais la combine pour retirer l'argent du jeu des casinos.
 
@@ -80,7 +91,7 @@ Je suis un programmeur vénézuélien et je connais la combine pour retirer l'ar
         await context.bot.send_photo(
             chat_id=update.effective_chat.id,
             photo=BOTTOM_IMAGE,
-            caption="🏆 Rejoignez les gagnants dès aujourd'hui !"
+            caption="🌟 Rejoignez les gagnants dès aujourd'hui !"
         )
 
         logger.info(f"Nouvel utilisateur: {update.effective_user.id}")
@@ -105,10 +116,10 @@ async def handle_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 👇 Voici les preuves en images 👇"""
             )
-            
+
             media_group = [InputMediaPhoto(media=url) for url in PAYMENT_PROOF_IMAGES]
             await context.bot.send_media_group(chat_id=update.effective_chat.id, media=media_group)
-            
+
             await context.bot.send_message(
                 chat_id=update.effective_chat.id,
                 text="🌟 Prêt à commencer votre succès ?",
@@ -127,10 +138,10 @@ async def handle_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 👇 Découvrez notre système en images 👇"""
             )
-            
+
             media_group = [InputMediaPhoto(media=url) for url in INFO_IMAGES]
             await context.bot.send_media_group(chat_id=update.effective_chat.id, media=media_group)
-            
+
             await context.bot.send_message(
                 chat_id=update.effective_chat.id,
                 text="🚀 Prêt à révolutionner vos gains ?",
