@@ -1,6 +1,6 @@
 import logging
 import os
-from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton, InputMediaPhoto, InputMediaVideo
+from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton, InputMediaPhoto
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
 from flask import Flask
 import threading
@@ -16,43 +16,32 @@ logging.basicConfig(
     ]
 )
 
-logger = logging.getLogger(name)
+logger = logging.getLogger(__name__)
 
 # Flask app pour garder le bot actif
-app = Flask(name)
+app = Flask(__name__)
 
 @app.route('/')
 def home():
     return f"Bot actif et opérationnel depuis {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
 
-# Token du bot
-TOKEN = '7184666905:AAFd2arfmIFZ86cp9NNVp57dKkH6hAVi4iM'
+# Token du bot (sécurisé via les variables d'environnement)
+TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
 
 # Médias
-INTRO_VIDEO = "https://drive.google.com/uc?export=download&id=1NREjyyYDfdgGtx4r-Lna-sKgpCHIC1ia"  # À remplacer par l'URL de votre vidéo
+INTRO_VIDEO = "https://drive.google.com/uc?export=download&id=1NREjyyYDfdgGtx4r-Lna-sKgpCHIC1ia"
 MAIN_IMAGE = "https://i.ytimg.com/vi/KolFup7TxOM/hq720.jpg"
-BOTTOM_IMAGE = "https://aviator.com.in/wp-content/uploads/2024/04/Aviator-Predictor-in-India.png"  # À remplacer par l'URL de l'image du bas
+BOTTOM_IMAGE = "https://aviator.com.in/wp-content/uploads/2024/04/Aviator-Predictor-in-India.png"
 
-# Images pour les preuves de paiement
 PAYMENT_PROOF_IMAGES = [
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Circle_sign_2.svg/1024px-Circle_sign_2.svg.png",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Circle_sign_2.svg/1024px-Circle_sign_2.svg.png",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Circle_sign_2.svg/1024px-Circle_sign_2.svg.png",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Circle_sign_2.svg/1024px-Circle_sign_2.svg.png",
     "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Circle_sign_2.svg/1024px-Circle_sign_2.svg.png"
-]
+] * 5
 
-# Images pour les informations
 INFO_IMAGES = [
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Circle_sign_2.svg/1024px-Circle_sign_2.svg.png",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Circle_sign_2.svg/1024px-Circle_sign_2.svg.png",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Circle_sign_2.svg/1024px-Circle_sign_2.svg.png",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Circle_sign_2.svg/1024px-Circle_sign_2.svg.png",
     "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Circle_sign_2.svg/1024px-Circle_sign_2.svg.png"
-]
+] * 5
 
 def create_keyboard():
-    """Crée le clavier avec les boutons"""
     keyboard = [
         [InlineKeyboardButton("🎯 Informations sur les bots", callback_data='info_bots')],
         [InlineKeyboardButton("💰 Retrait du casino", callback_data='casino_withdrawal')],
@@ -61,22 +50,18 @@ def create_keyboard():
     return InlineKeyboardMarkup(keyboard)
 
 def create_program_button():
-    """Crée le bouton pour obtenir le programme"""
     keyboard = [[InlineKeyboardButton("🚀 OBTENIR LE PROGRAMME MAINTENANT", url="https://t.me/judespronos")]]
     return InlineKeyboardMarkup(keyboard)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Gère la commande /start"""
     try:
-        # Envoie la vidéo d'introduction
         await context.bot.send_video(
             chat_id=update.effective_chat.id,
             video=INTRO_VIDEO,
             caption="🎮 Découvrez notre méthode révolutionnaire ! 🎰"
         )
 
-        # Message principal avec image
-        message = """🎯 BILL GATES, BONJOUR ❗️
+        message = f"""🎯 BILL GATES, BONJOUR ❗️
 
 Je suis un programmeur vénézuélien et je connais la combine pour retirer l'argent du jeu des casinos.
 
@@ -85,13 +70,13 @@ Je suis un programmeur vénézuélien et je connais la combine pour retirer l'ar
 💫 Vous pouvez gagner de l'argent sans rien faire, car j'ai déjà fait tout le programme pour vous.
 
 🔥 Dernière mise à jour: {datetime.now().strftime('%d/%m/%Y')}"""
-    
-        reply_markup = create_keyboard()
+
         await update.message.reply_photo(
             photo=MAIN_IMAGE,
             caption=message,
-            reply_markup=reply_markup
-        )# Envoie l'image du bas
+            reply_markup=create_keyboard()
+        )
+
         await context.bot.send_photo(
             chat_id=update.effective_chat.id,
             photo=BOTTOM_IMAGE,
@@ -104,13 +89,11 @@ Je suis un programmeur vénézuélien et je connais la combine pour retirer l'ar
         logger.error(f"Erreur lors du démarrage: {e}")
 
 async def handle_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Gère les clics sur les boutons"""
     query = update.callback_query
     await query.answer()
 
     try:
         if query.data == 'casino_withdrawal':
-            # Message initial
             await context.bot.send_message(
                 chat_id=update.effective_chat.id,
                 text="""🎰 PREUVES DE PAIEMENT RÉCENTES 🎰
@@ -123,22 +106,16 @@ async def handle_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 👇 Voici les preuves en images 👇"""
             )
             
-            # Envoi des images
             media_group = [InputMediaPhoto(media=url) for url in PAYMENT_PROOF_IMAGES]
-            await context.bot.send_media_group(
-                chat_id=update.effective_chat.id,
-                media=media_group
-            )
+            await context.bot.send_media_group(chat_id=update.effective_chat.id, media=media_group)
             
-            # Bouton final
             await context.bot.send_message(
                 chat_id=update.effective_chat.id,
                 text="🌟 Prêt à commencer votre succès ?",
                 reply_markup=create_program_button()
             )
-    
+
         elif query.data == 'info_bots':
-            # Message initial
             await context.bot.send_message(
                 chat_id=update.effective_chat.id,
                 text="""🤖 NOTRE TECHNOLOGIE UNIQUE 🤖
@@ -151,14 +128,9 @@ async def handle_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 👇 Découvrez notre système en images 👇"""
             )
             
-            # Envoi des images
             media_group = [InputMediaPhoto(media=url) for url in INFO_IMAGES]
-            await context.bot.send_media_group(
-                chat_id=update.effective_chat.id,
-                media=media_group
-            )
+            await context.bot.send_media_group(chat_id=update.effective_chat.id, media=media_group)
             
-            # Bouton final
             await context.bot.send_message(
                 chat_id=update.effective_chat.id,
                 text="🚀 Prêt à révolutionner vos gains ?",
@@ -175,32 +147,22 @@ async def handle_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
 
 def keep_alive():
-    """Maintient le bot actif avec Flask"""
     def run():
         app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 10000)))
     thread = threading.Thread(target=run)
     thread.start()
 
 def main():
-    """Fonction principale pour démarrer le bot"""
     try:
-        # Création de l'application
         application = Application.builder().token(TOKEN).build()
-
-        # Ajout des gestionnaires
         application.add_handler(CommandHandler("start", start))
         application.add_handler(CallbackQueryHandler(handle_button))
-
-        # Maintenir le bot actif avec Flask
         keep_alive()
-
-        # Lancer le bot
         logger.info("Bot démarré avec succès!")
         application.run_polling()
-
     except Exception as e:
         logger.critical(f"Erreur fatale: {e}")
         raise
 
-if name == 'main':
+if __name__ == '__main__':
     main()
