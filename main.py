@@ -1,6 +1,6 @@
 import os
 from flask import Flask, request
-from telegram import Bot, Update
+from telegram import Bot, Update, InputMediaPhoto, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Dispatcher, CommandHandler, MessageHandler, Filters
 
 # Initialisation de l'application Flask
@@ -23,7 +23,17 @@ def start(update, context):
         "Écrivez-moi et je vous donnerai le programme 🎁\n"
         "👉@moustaphalux👈"
     )
-    update.message.reply_text(message)
+
+    # Envoyer un message avec une image et des boutons
+    bot.send_photo(
+        chat_id=update.message.chat_id,
+        photo='https://i.ytimg.com/vi/k3pU60HMEYA/maxresdefault.jpg',  # Remplacez par l'URL de l'image
+        caption=message,
+        reply_markup=InlineKeyboardMarkup([
+            [InlineKeyboardButton("Télécharger le programme", callback_data='program_download')],
+            [InlineKeyboardButton("Contactez-nous", url="https://t.me/moustaphalux")]
+        ])
+    )
 
 # Gérer les messages texte
 def echo(update, context):
